@@ -6,11 +6,11 @@
     <title>PropertiesManager</title>
     <authors>Quellatalo Nin</authors>
     <owners>Quellatalo Nin</owners>
-    <projectUrl>http://quellatalo.net/Coding/PropertiesManager</projectUrl>
+    <projectUrl>https://github.com/quellatalo/PropertiesManager</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>This PropertiesManager library provides methods to handle Java-like config/properties files. It also supports maintaining layouts and comments.</description>
     <releaseNotes>
-      Rework exceptions life circle.
+      Rework exceptions life circle. (and moved to github)
     </releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>property properties java config comments layout</tags>
