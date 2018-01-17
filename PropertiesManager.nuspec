@@ -10,7 +10,9 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>This PropertiesManager library provides methods to handle Java-like config/properties files. It also supports maintaining layouts and comments.</description>
     <releaseNotes>
-      Rework exceptions life circle. (and moved to github)
++ Moved to github.
++ Rework exceptions life circle.
++ Added HasProperty method.
     </releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>property properties java config comments layout</tags>

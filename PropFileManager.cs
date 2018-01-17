@@ -280,6 +280,16 @@ namespace Quellatalo.Nin.PropertiesManager
                 entries.Add(new LineEntry(key + "="));
             }
         }
+
+        /// <summary>
+        /// Check whether a property exists.
+        /// </summary>
+        /// <param name="key">Property key.</param>
+        /// <returns>Is exist.</returns>
+        public bool HasProperty(string key)
+        {
+            return properties.ContainsKey(key);
+        }
         /// <summary>
         /// Clears all entries and properties.
         /// </summary>
