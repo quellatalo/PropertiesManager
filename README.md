@@ -40,7 +40,7 @@ public void PropManagerTest()
     p["count"] = (p.GetInt("count") + 1).ToString(); // count is now 2
 
     // Adds a new property
-    if (p[modifiedTimeKey] == null) // Checks if the property is not already exist
+    if (!p.HasProperty(modifiedTimeKey)) // Checks if the property is not already exist
     {
         p.AddLineEntry(); // Adds a new empty line
         p.AddLineEntry("##### Log #####"); // Adds a comment line
