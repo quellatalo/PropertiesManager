@@ -83,7 +83,7 @@ namespace Quellatalo.Nin.PropertiesManager
             string rs;
             if (entries[entryIndex].IsProperty)
             {
-                string key = getPropertyKeyFromEntry(entries[entryIndex].Entry);
+                string key = entries[entryIndex].Key;
                 rs = entries[entryIndex].Entry + (properties.ContainsKey(key) ? properties[key] : "");
             }
             else
@@ -113,7 +113,7 @@ namespace Quellatalo.Nin.PropertiesManager
                 if (prop.Length > 1)
                 {
                     v = prop[1].Trim();
-                    int valueIndex = IndexOfNonWhitespace(prop[1], 0);
+                    int valueIndex = Util.IndexOfNonWhitespace(prop[1]);
                     entries[entryIndex].Entry = prop[0] + "=" + prop[1].Substring(0, valueIndex == -1 ? 0 : valueIndex);
                 }
                 else
@@ -149,7 +149,7 @@ namespace Quellatalo.Nin.PropertiesManager
                 if (prop.Length > 1)
                 {
                     value = prop[1].Trim();
-                    int valueIndex = IndexOfNonWhitespace(prop[1], 0);
+                    int valueIndex = Util.IndexOfNonWhitespace(prop[1]);
                     entries.Add(new LineEntry(prop[0] + "=" + prop[1].Substring(0, valueIndex == -1 ? 0 : valueIndex)));
                 }
                 else
@@ -180,7 +180,7 @@ namespace Quellatalo.Nin.PropertiesManager
                 if (prop.Length > 1)
                 {
                     value = prop[1].Trim();
-                    int valueIndex = IndexOfNonWhitespace(prop[1], 0);
+                    int valueIndex = Util.IndexOfNonWhitespace(prop[1]);
                     entries.Insert(index, new LineEntry(prop[0] + "=" + prop[1].Substring(0, valueIndex == -1 ? 0 : valueIndex)));
                 }
                 else
@@ -235,7 +235,7 @@ namespace Quellatalo.Nin.PropertiesManager
             {
                 if (entries[i].IsProperty)
                 {
-                    if (getPropertyKeyFromEntry(entries[i].Entry).Equals(key))
+                    if (entries[i].Key.Equals(key))
                     {
                         found = true;
                         break;
@@ -245,15 +245,7 @@ namespace Quellatalo.Nin.PropertiesManager
             if (!found) i = -1;
             return i;
         }
-        private string getPropertyKeyFromEntry(string entry)
-        {
-            string s = entry.Trim();
-            if (s.EndsWith("="))
-            {
-                s = s.Substring(0, s.Length - 1).Trim();
-            }
-            return s;
-        }
+
         /// <summary>
         /// Sets a property.
         /// If a new property is set, a new line entry would also be added.
@@ -310,14 +302,6 @@ namespace Quellatalo.Nin.PropertiesManager
                 AddLineEntry(line);
             }
         }
-        internal static int IndexOfNonWhitespace(string source, int startIndex = 0)
-        {
-            if (startIndex < 0) throw newLineEntryException();
-            if (source != null)
-                for (int i = startIndex; i < source.Length; i++)
-                    if (!char.IsWhiteSpace(source[i])) return i;
-            return -1;
-        }
 
 
 
@@ -344,7 +328,7 @@ namespace Quellatalo.Nin.PropertiesManager
             {
                 if (entry.IsProperty)
                 {
-                    string key = getPropertyKeyFromEntry(entry.Entry);
+                    string key = entry.Key;
                     fullText += entry.Entry + (properties.ContainsKey(key) ? properties[key] : "") + NewLine;
                 }
                 else
@@ -366,7 +350,7 @@ namespace Quellatalo.Nin.PropertiesManager
             {
                 if (entry.IsProperty)
                 {
-                    string key = getPropertyKeyFromEntry(entry.Entry);
+                    string key = entry.Key;
                     lines.Add(entry.Entry + (properties.ContainsKey(key) ? properties[key] : ""));
                 }
                 else

@@ -40,6 +40,7 @@
     <Compile Include="LineEntry.cs" />
     <Compile Include="PropFileManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PropertiesManager.cd" />
