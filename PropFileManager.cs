@@ -525,5 +525,11 @@ namespace Quellatalo.Nin.PropertiesManager
         private static ArgumentOutOfRangeException newLineEntryException() { return new ArgumentOutOfRangeException(LINE_ENTRY_EXCEPTION_DESCRIPTION); }
 
         private static ArgumentException newInvalidKeyException() { return new ArgumentException(INVALID_KEY_EXCEPTION_DESCRIPTION); }
+
+        public static bool IsPropertyLine(String line)
+        {
+            string trimStart = line.TrimStart();
+            return trimStart.Length > 0 && !trimStart.StartsWith("#");
+        }
     }
 }

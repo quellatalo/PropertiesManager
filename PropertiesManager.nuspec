@@ -10,7 +10,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>This PropertiesManager library provides methods to handle Java-like config/properties files. It also supports maintaining layouts and comments.</description>
     <releaseNotes>
-Attempt to change writing style a little. (There should be no changes in usage.)
+      Added a method to check whether a line is a comment or a property: IsPropertyLine(string).
     </releaseNotes>
     <copyright>Copyright 2017</copyright>
     <tags>property properties java config comments layout</tags>

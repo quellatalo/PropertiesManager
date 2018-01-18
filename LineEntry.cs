@@ -7,8 +7,7 @@
         {
             get
             {
-                string trimStart = Entry.TrimStart();
-                return trimStart.Length > 0 && !trimStart.StartsWith("#");
+                return PropFileManager.IsPropertyLine(Entry);
             }
         }
 
