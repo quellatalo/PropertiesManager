@@ -13,7 +13,12 @@ namespace Quellatalo.Nin.PropertiesManager
         private static readonly string INVALID_KEY_EXCEPTION_DESCRIPTION = "A key should not have '=' nor NewLine character in it, and should not start with '#'.";
         private static readonly string LINE_ENTRY_EXCEPTION_DESCRIPTION = "An entry should not contain a NewLine character.";
         private IDictionary<string, string> properties = new Dictionary<string, string>();
+        private char[] separator = { '=' };
         private List<LineEntry> entries = new List<LineEntry>();
+        /// <summary>
+        /// Key-value separator character.
+        /// </summary>
+        public char Separator { get { return separator[0]; } set { separator[0] = value; } }
         /// <summary>
         /// File encoding.
         /// </summary>
@@ -32,33 +37,17 @@ namespace Quellatalo.Nin.PropertiesManager
         /// <param name="filePath">Target file.</param>
         /// <param name="encoding">Encoding.</param>
         /// <param name="newLine">NewLine character in this properties file.</param>
-        public PropFileManager(string filePath, Encoding encoding, string newLine)
+        public PropFileManager(string filePath, Encoding encoding = null, string newLine = null, char separator = '=')
         {
             FilePath = filePath;
-            NewLine = newLine;
-            Encoding = encoding;
+            NewLine = newLine ?? Environment.NewLine;
+            Encoding = encoding ?? Encoding.Default;
+            Separator = separator;
             if (!File.Exists(filePath))
             {
                 using (File.Create(filePath)) { }
             }
         }
-        /// <summary>
-        /// Constructs a PropertiesFileManager and load data from the target file, with default evironment NewLine character.
-        /// </summary>
-        /// <param name="filePath">Target file.</param>
-        /// <param name="encoding">Encoding.</param>
-        public PropFileManager(string filePath, Encoding encoding) : this(filePath, encoding, Environment.NewLine) { }
-        /// <summary>
-        /// Constructs a PropertiesFileManager and load data from the target file, with default encoding.
-        /// </summary>
-        /// <param name="filePath">Target file.</param>
-        /// <param name="newLine">NewLine character in this properties file.</param>
-        public PropFileManager(string filePath, string newLine) : this(filePath, Encoding.Default, newLine) { }
-        /// <summary>
-        /// Constructs a PropertiesFileManager and load data from the target file, with default encoding, and default evironment NewLine character.
-        /// </summary>
-        /// <param name="filePath">Target file.</param>
-        public PropFileManager(string filePath) : this(filePath, Encoding.Default) { }
         /// <summary>
         /// Gets or Sets a line entry.
         /// </summary>
@@ -109,7 +98,7 @@ namespace Quellatalo.Nin.PropertiesManager
             else
             {
                 string v = "";
-                string[] prop = text.Split('=');
+                string[] prop = text.Split(separator, 2);
                 if (prop.Length > 1)
                 {
                     v = prop[1].Trim();
@@ -121,7 +110,6 @@ namespace Quellatalo.Nin.PropertiesManager
                     entries[entryIndex].Entry = prop[0];
                 }
                 properties[prop[0].Trim()] = v;
-                entries[entryIndex].Entry = v;
             }
         }
 
@@ -145,7 +133,7 @@ namespace Quellatalo.Nin.PropertiesManager
             else
             {
                 string value = "";
-                string[] prop = text.Split('=');
+                string[] prop = text.Split(separator, 2);
                 if (prop.Length > 1)
                 {
                     value = prop[1].Trim();
@@ -526,6 +514,11 @@ namespace Quellatalo.Nin.PropertiesManager
 
         private static ArgumentException newInvalidKeyException() { return new ArgumentException(INVALID_KEY_EXCEPTION_DESCRIPTION); }
 
+        /// <summary>
+        /// Check whether a line of text is a valid property.
+        /// </summary>
+        /// <param name="line">The line to be checked.</param>
+        /// <returns>Whether the line is a valid property.</returns>
         public static bool IsPropertyLine(String line)
         {
             string trimStart = line.TrimStart();
