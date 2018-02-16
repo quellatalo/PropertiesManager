@@ -35,8 +35,9 @@ namespace Quellatalo.Nin.PropertiesManager
         /// Constructs a PropertiesFileManager and load data from the target file..
         /// </summary>
         /// <param name="filePath">Target file.</param>
-        /// <param name="encoding">Encoding.</param>
-        /// <param name="newLine">NewLine character in this properties file.</param>
+        /// <param name="encoding">Encoding. (null means default)</param>
+        /// <param name="newLine">NewLine character in this properties file. (null means environment's NewLine)</param>
+        /// <param name="separator">Key-value separator character.</param>
         public PropFileManager(string filePath, Encoding encoding = null, string newLine = null, char separator = '=')
         {
             FilePath = filePath;
