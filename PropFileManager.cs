@@ -292,8 +292,6 @@ namespace Quellatalo.Nin.PropertiesManager
             }
         }
 
-
-
         /// <summary>
         /// Gets full text output.
         /// </summary>
@@ -312,20 +310,20 @@ namespace Quellatalo.Nin.PropertiesManager
         /// <returns>The full text output of the config file.</returns>
         public string GetFullText()
         {
-            string fullText = "";
+            StringBuilder stringBuilder = new StringBuilder();
             foreach (LineEntry entry in entries)
             {
                 if (entry.IsProperty)
                 {
                     string key = entry.Key;
-                    fullText += entry.Entry + (properties.ContainsKey(key) ? properties[key] : "") + NewLine;
+                    stringBuilder.Append(entry.Entry).Append(properties.ContainsKey(key) ? properties[key] : "").Append(NewLine);
                 }
                 else
                 {
-                    fullText += entry.Entry + NewLine;
+                    stringBuilder.Append(entry.Entry).Append(NewLine);
                 }
             }
-            return fullText;
+            return stringBuilder.ToString();
         }
 
         /// <summary>
