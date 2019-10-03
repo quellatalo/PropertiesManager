@@ -10,15 +10,17 @@ namespace Quellatalo.Nin.PropertiesManager
     /// </summary>
     public class PropFileManager
     {
-        private static readonly string INVALID_KEY_EXCEPTION_DESCRIPTION = "A key should not have '=' nor NewLine character in it, and should not start with '#'.";
+        private static readonly string INVALID_KEY_EXCEPTION_DESCRIPTION = "A key should not have Separator nor NewLine character in it, and should not start with Comment.";
         private static readonly string LINE_ENTRY_EXCEPTION_DESCRIPTION = "An entry should not contain a NewLine character.";
+        public static readonly string COMMENT = "#";
+        public const string DEFAULT_SEPARATOR = "=";
+        private string[] separator = { DEFAULT_SEPARATOR };
         private IDictionary<string, string> properties = new Dictionary<string, string>();
-        private char[] separator = { '=' };
         private List<LineEntry> entries = new List<LineEntry>();
         /// <summary>
         /// Key-value separator character.
         /// </summary>
-        public char Separator { get { return separator[0]; } set { separator[0] = value; } }
+        public string Separator { get { return separator[0]; } set { separator[0] = value; } }
         /// <summary>
         /// File encoding.
         /// </summary>
@@ -38,7 +40,7 @@ namespace Quellatalo.Nin.PropertiesManager
         /// <param name="encoding">Encoding. (null means default)</param>
         /// <param name="newLine">NewLine character in this properties file. (null means environment's NewLine)</param>
         /// <param name="separator">Key-value separator character.</param>
-        public PropFileManager(string filePath, Encoding encoding = null, string newLine = null, char separator = '=')
+        public PropFileManager(string filePath, Encoding encoding = null, string newLine = null, string separator = DEFAULT_SEPARATOR)
         {
             FilePath = filePath;
             NewLine = newLine ?? Environment.NewLine;
@@ -74,7 +76,7 @@ namespace Quellatalo.Nin.PropertiesManager
             if (entries[entryIndex].IsProperty)
             {
                 string key = entries[entryIndex].Key;
-                rs = entries[entryIndex].Entry + (properties.ContainsKey(key) ? properties[key] : "");
+                rs = entries[entryIndex].Entry + (properties.ContainsKey(key) ? properties[key] : string.Empty);
             }
             else
             {
@@ -92,19 +94,19 @@ namespace Quellatalo.Nin.PropertiesManager
         {
             checkLineEntryValid(text);
             string trimstart = text.TrimStart();
-            if (trimstart.Length == 0 || trimstart.StartsWith("#"))
+            if (trimstart.Length == 0 || trimstart.StartsWith(COMMENT))
             {
                 entries[entryIndex].Entry = text;
             }
             else
             {
-                string v = "";
-                string[] prop = text.Split(separator, 2);
+                string v = string.Empty;
+                string[] prop = text.Split(separator, 2, StringSplitOptions.None);
                 if (prop.Length > 1)
                 {
                     v = prop[1].Trim();
                     int valueIndex = Util.IndexOfNonWhitespace(prop[1]);
-                    entries[entryIndex].Entry = prop[0] + "=" + prop[1].Substring(0, valueIndex == -1 ? 0 : valueIndex);
+                    entries[entryIndex].Entry = prop[0] + Separator + prop[1].Substring(0, valueIndex == -1 ? 0 : valueIndex);
                 }
                 else
                 {
@@ -127,23 +129,23 @@ namespace Quellatalo.Nin.PropertiesManager
         {
             checkLineEntryValid(text);
             string trimstart = text.TrimStart();
-            if (trimstart.Length == 0 || trimstart.StartsWith("#"))
+            if (trimstart.Length == 0 || trimstart.StartsWith(COMMENT))
             {
-                entries.Add(new LineEntry(text));
+                entries.Add(new LineEntry(this, text));
             }
             else
             {
-                string value = "";
-                string[] prop = text.Split(separator, 2);
+                string value = string.Empty;
+                string[] prop = text.Split(separator, 2, StringSplitOptions.None);
                 if (prop.Length > 1)
                 {
                     value = prop[1].Trim();
                     int valueIndex = Util.IndexOfNonWhitespace(prop[1]);
-                    entries.Add(new LineEntry(prop[0] + "=" + prop[1].Substring(0, valueIndex == -1 ? 0 : valueIndex)));
+                    entries.Add(new LineEntry(this,prop[0] + Separator + prop[1].Substring(0, valueIndex == -1 ? 0 : valueIndex)));
                 }
                 else
                 {
-                    entries.Add(new LineEntry(prop[0]));
+                    entries.Add(new LineEntry(this,prop[0]));
                 }
                 properties[prop[0].Trim()] = value;
             }
@@ -158,23 +160,23 @@ namespace Quellatalo.Nin.PropertiesManager
         {
             checkLineEntryValid(text);
             string trimstart = text.TrimStart();
-            if (trimstart.Length == 0 || trimstart.StartsWith("#"))
+            if (trimstart.Length == 0 || trimstart.StartsWith(COMMENT))
             {
-                entries.Insert(index, new LineEntry(text));
+                entries.Insert(index, new LineEntry(this,text));
             }
             else
             {
-                string value = "";
+                string value = string.Empty;
                 string[] prop = text.Split('=');
                 if (prop.Length > 1)
                 {
                     value = prop[1].Trim();
                     int valueIndex = Util.IndexOfNonWhitespace(prop[1]);
-                    entries.Insert(index, new LineEntry(prop[0] + "=" + prop[1].Substring(0, valueIndex == -1 ? 0 : valueIndex)));
+                    entries.Insert(index, new LineEntry(this,prop[0] + Separator + prop[1].Substring(0, valueIndex == -1 ? 0 : valueIndex)));
                 }
                 else
                 {
-                    entries.Insert(index, new LineEntry(prop[0]));
+                    entries.Insert(index, new LineEntry(this,prop[0]));
                 }
                 properties[prop[0].Trim()] = value;
             }
@@ -258,7 +260,7 @@ namespace Quellatalo.Nin.PropertiesManager
             properties[key.Trim()] = value.Trim();
             if (GetPropertyEntryIndex(key) == -1)
             {
-                entries.Add(new LineEntry(key + "="));
+                entries.Add(new LineEntry(this,key + Separator));
             }
         }
 
@@ -316,7 +318,7 @@ namespace Quellatalo.Nin.PropertiesManager
                 if (entry.IsProperty)
                 {
                     string key = entry.Key;
-                    stringBuilder.Append(entry.Entry).Append(properties.ContainsKey(key) ? properties[key] : "").Append(NewLine);
+                    stringBuilder.Append(entry.Entry).Append(properties.ContainsKey(key) ? properties[key] : string.Empty).Append(NewLine);
                 }
                 else
                 {
@@ -338,7 +340,7 @@ namespace Quellatalo.Nin.PropertiesManager
                 if (entry.IsProperty)
                 {
                     string key = entry.Key;
-                    lines.Add(entry.Entry + (properties.ContainsKey(key) ? properties[key] : ""));
+                    lines.Add(entry.Entry + (properties.ContainsKey(key) ? properties[key] : string.Empty));
                 }
                 else
                 {
@@ -501,7 +503,7 @@ namespace Quellatalo.Nin.PropertiesManager
 
         private void checkKeyValid(string key)
         {
-            if (key.Contains("=") || key.TrimStart().StartsWith("#") || key.Contains(NewLine)) throw newInvalidKeyException();
+            if (key.Contains(Separator) || key.TrimStart().StartsWith(COMMENT) || key.Contains(NewLine)) throw newInvalidKeyException();
         }
 
         private void checkLineEntryValid(string text)
@@ -521,7 +523,7 @@ namespace Quellatalo.Nin.PropertiesManager
         public static bool IsPropertyLine(String line)
         {
             string trimStart = line.TrimStart();
-            return trimStart.Length > 0 && !trimStart.StartsWith("#");
+            return trimStart.Length > 0 && !trimStart.StartsWith(COMMENT);
         }
     }
 }
