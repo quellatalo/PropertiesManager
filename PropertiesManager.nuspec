@@ -7,12 +7,13 @@
     <authors>Quellatalo Nin</authors>
     <owners>Quellatalo Nin</owners>
     <projectUrl>https://github.com/quellatalo/PropertiesManager</projectUrl>
+    <license type="expression">MIT</license>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>This PropertiesManager library provides methods to handle Java-like config/properties files. It also supports maintaining layouts and comments.</description>
     <releaseNotes>
-+ Improve performance.
+      + Change how Separator works.
     </releaseNotes>
     <copyright>Copyright 2017</copyright>
-    <tags>property properties java config comments layout</tags>
+    <tags>property properties config comments layout</tags>
   </metadata>
 </package>
